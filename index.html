@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Koło Fortuny</title>
+    <meta name="author" content="Radek Filonik">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">\
+</head>
+<body>
+
+    <script>
+        
+        var tableContent = ["radek", "adacademy", "warszawa", "polska mistrzem", "ameryka południowa", "andromeda", "crichton", "jupiter", "terminator",
+        "fortuna", "komputer", "facebook", "brazylia meksyk", "hiszpania rosja", "polska portugalia", "polska japonia", "cukiernia", "wojsko", "portugalia", "urugwaj"];
+
+        var mainBody = document.getElementsByTagName("body")[0];
+        var atempts = 6;
+        var lives = 3;
+
+        function randomPasswordFromArray(passwordsArray)
+        {
+            var randnumber = Math.random() * 100 % passwordsArray.length;
+            randnumber = Math.floor(randnumber);
+            return passwordsArray[randnumber];
+        }
+
+        function createDivLetterButtuns()
+        {
+            mainBody.appendChild(document.createElement("div"));
+            document.getElementsByTagName("div")[0].setAttribute("id", "buttonsDiv");
+            var buttonsDiv = document.getElementById("buttonsDiv");
+            buttonsDiv.setAttribute("style","width: 500px; height: 150px; margin-left: auto; margin-right: auto; margin-bottom: 15px; text-align: center; background-color: gray");
+
+            for(var i = 0; i < 32; i++)
+            {
+                buttonsDiv.appendChild(document.createElement("button"));
+            }
+
+            var letterButtons = document.getElementsByTagName("button");
+
+            var j = 0;
+            for(var i = 0; i < 23; i++)
+            {
+                var nextLetter = (j+10).toString(36);
+                if((nextLetter == 'q') || (nextLetter == 'v') || (nextLetter == 'x'))
+                {
+                    j++;
+                    nextLetter = (j+10).toString(36);
+                }
+                
+                letterButtons[i].innerHTML = nextLetter;
+                j++;
+            }
+
+            letterButtons[23].innerHTML = "ą";
+            letterButtons[24].innerHTML = "ć";
+            letterButtons[25].innerHTML = "ę";
+            letterButtons[26].innerHTML = "ł";
+            letterButtons[27].innerHTML = "ń";
+            letterButtons[28].innerHTML = "ó";
+            letterButtons[29].innerHTML = "ś";
+            letterButtons[30].innerHTML = "ź";
+            letterButtons[31].innerHTML = "ż";
+
+            for(var i = 0; i < 32; i++)
+            {
+                letterButtons[i].setAttribute("style", "width: 50px; height: 30px; margin: 3px");
+                letterButtons[i].addEventListener("click", checkLetter);
+            }
+        }
+        
+        function createDivPasswordInput(giveMePassword)
+        {
+            var letters = giveMePassword;
+
+            mainBody.appendChild(document.createElement("div"));
+            document.getElementsByTagName("div")[1].setAttribute("id", "inputsDiv");
+            var inputsDiv = document.getElementById("inputsDiv");
+            inputsDiv.setAttribute("style", "width: 500px; height: 200px; margin-left: auto; margin-right: auto; margin-bottom: 15px; text-align: center; background-color: gray");
+
+            for(var i = 0; i < letters.length; i++)
+            {
+                inputsDiv.appendChild(document.createElement("input"));
+            }
+            var inputs = document.getElementsByTagName("input");
+
+            for(var i = 0; i < letters.length; i++)
+            {
+                inputs[i].setAttribute("style", "width: 50px; height: 30px; margin: 3px; text-align: center");
+                inputs[i].setAttribute("readonly", "");
+
+                if(letters[i] == " ")
+                {
+                    var addBackGround = inputs[i].getAttribute("style");
+                    inputs[i].setAttribute("style", addBackGround + "; background-color: gray");
+                    inputs[i].value = " ";
+                }
+            }
+
+
+        }
+        
+        function createFinalDiv()
+        {
+            mainBody.appendChild(document.createElement("div"));
+            document.getElementsByTagName("div")[2].setAttribute("id", "finalDiv");
+            var finalDiv = document.getElementById("finalDiv");
+            finalDiv.setAttribute("style", "width: 500px; height: 150px; margin-left: auto; margin-right: auto; text-align: center; background-color: gray; padding: 1px;");
+
+            finalDiv.appendChild(document.createElement("textarea"));
+            document.getElementsByTagName("textarea")[0].setAttribute("id", "textArea");
+            var textArea = document.getElementById("textArea");
+            textArea.setAttribute("style", "width: 400px; height: 20px; margin-left: auto; margin-right: auto; text-align: center; margin-top: 15px; resize: none; display: block");
+
+            finalDiv.appendChild(document.createElement("button"));
+            document.getElementById("finalDiv").getElementsByTagName("button")[0].setAttribute("id", "finalButton");
+            var finalButton = document.getElementById("finalButton");
+            finalButton.setAttribute("style", "width: 200px; height: 35px; margin-left: auto; margin-right: auto; margin-top: 15px; text-align: center");
+            finalButton.innerHTML = "Sprawdź hasło."
+            finalButton.addEventListener("click", checkPassowrd);
+
+            finalDiv.appendChild(document.createElement("textarea"));
+            document.getElementsByTagName("textarea")[1].setAttribute("id", "textArea2");
+            var textArea2 = document.getElementById("textArea2");
+            textArea2.setAttribute("style", "width: 480px; height: 20px; margin-left: auto; margin-right: auto; text-align: center; margin-top: 15px; resize: none; display: block");
+            textArea2.setAttribute("readonly", "");
+            textArea2.innerHTML = "Próby zgadnięcia liter: " + atempts + ". Próby zgadnięcia hasła: " + lives + ".";
+
+        }
+
+        function checkLetter(e)
+        {
+            if(atempts > 0)
+            {
+                var letter = e.target.innerHTML;
+                var minusAtempts = true;
+                for(var i = 0; i < password.length; i++)
+                {
+                    if(letter == password[i])
+                    {
+                        minusAtempts = false
+                        document.getElementsByTagName("input")[i].setAttribute("value", password[i]);
+                    }
+                }
+
+                if(minusAtempts == true)
+                {
+                    atempts--;
+                    textArea2.innerHTML = "Próby zgadnięcia liter: " + atempts + ". Próby zgadnięcia hasła: " + lives + ".";
+                    alert("Nie ma takiej litery w haśle.");
+                }
+                e.target.setAttribute("disabled", "");
+                var styleAttributes = e.target.getAttribute("style");
+                e.target.setAttribute("style", styleAttributes + "; background-color: gray")
+
+                var atemptPassword = "";
+                for(var i = 0; i < password.length; i++)
+                {
+                    atemptPassword += document.getElementsByTagName("input")[i].value;
+                }
+                if(atemptPassword == password)
+                {
+                    alert("BRAWO! ZGADŁEŚ HASŁO!");
+                }
+            }
+            else
+            {
+                alert("Wyczerpaleś próby zgadnięcia litery. Zgaduj hasło");
+            }
+        }
+        
+        function checkPassowrd(e)
+        {
+            if(lives > 0)
+            {
+                var word = textArea.value;
+                if(word == password)
+                {
+                    for (var i = 0; i < password.length; i++)
+                    {
+                        document.getElementsByTagName("input")[i].setAttribute("value", password[i]);
+                    }
+                    alert("BRAWO! ZGADŁEŚ HASŁO!");
+                }
+                else
+                {
+                    lives--;
+                    textArea2.innerHTML = "Próby zgadnięcia liter: " + atempts + ". Próby zgadnięcia hasła: " + lives + ".";
+                    alert("Nieprawidłowe hasło.")
+                }
+            }
+            else
+            {
+                alert("Wyczerpaleś próby zgadnięcia hasła.");
+            }
+        }
+
+
+        createDivLetterButtuns();
+        var password = randomPasswordFromArray(tableContent);
+        console.log(password);
+        createDivPasswordInput(password);
+        createFinalDiv();
+
+    </script>
+    
+</body>
+</html>
